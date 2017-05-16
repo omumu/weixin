@@ -1,0 +1,35 @@
+@charset "utf-8";
+#banner{margin-top: -20px;  }
+#listgroup{margin-top: -65px;  }
+#vediolist{width:100%;padding: 0px;margin-top: 5px;}
+#vediorow{margin:10px 0}
+#vedioimg{width:100%; height:100%}
+#intro{overflow: hidden; height:30px;color:darkgreen;font-size: 20px}
+
+#pullUp {
+    background:#fff;
+    height:40px;
+    line-height:40px;
+    padding:5px 10px;
+ /*border-bottom:1px solid #ccc;*/
+    font-weight:bold;
+    font-size:14px;
+    color:#888;
+    text-align: center;
+}
+#pullDown {
+    background:#fff;
+    height:40px;
+    line-height:40px;
+    padding:5px 10px;
+   /* border-bottom:1px solid #ccc;*/
+    font-weight:bold;
+    font-size:14px;
+    color:#888;
+    text-align: center;
+}
+li{
+    list-style-type: none;
+}
+
+a{text-decoration:none}

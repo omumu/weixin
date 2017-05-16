@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.dao.regisMapper" >
+  <resultMap id="BaseResultMap" type="com.project.model.regis" >
+    <id column="regis_id" property="regisId" jdbcType="INTEGER" />
+    <result column="regis_name" property="regisName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    regis_id, regis_name
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_regis
+    where regis_id = #{regisId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from tb_regis
+    where regis_id = #{regisId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert">
+    insert into tb_regis (regis_name,regis_status)
+    values (#{0},#{1})
+  </insert>
+  <insert id="insertSelective" parameterType="com.project.model.regis" >
+    insert into tb_regis
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="regisId != null" >
+        regis_id,
+      </if>
+      <if test="regisName != null" >
+        regis_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="regisId != null" >
+        #{regisId,jdbcType=INTEGER},
+      </if>
+      <if test="regisName != null" >
+        #{regisName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.project.model.regis" >
+    update tb_regis
+    <set >
+      <if test="regisName != null" >
+        regis_name = #{regisName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where regis_id = #{regisId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.project.model.regis" >
+    update tb_regis
+    set regis_name = #{regisName,jdbcType=VARCHAR}
+    where regis_id = #{regisId,jdbcType=INTEGER}
+  </update>
+  <select id="getreGisList" resultType="map">
+    select * from tb_regis where tb_regis.regis_status=0
+
+  </select>
+  <select id="getRegisCount" resultType="int">
+    select count(*) from tb_regis where tb_regis.regis_status=0
+  </select>
+  <select id="serchRegis" resultType="map" parameterType="String">
+    select * from tb_regis where tb_regis.regis_name like "%"#{0}"%"
+  </select>
+  <select id="getRegisName" resultType="String" parameterType="int">
+    select regis_name from tb_regis where tb_regis.regis_id=#{0}
+  </select>
+  <select id="getDocmessage" resultType="map" parameterType="int">
+    select doctor_name,doctor_level,doctor_price from tb_doctor where tb_doctor.doctor_id=#{0}
+  </select>
+  <select id="getreGisListM" resultType="map">
+    select * from tb_regis limit #{0},#{1}
+
+  </select>
+  <select id="getRegisCountM" resultType="int">
+    select count(*) from tb_regis
+  </select>
+  <delete id="deleteById" parameterType="int">
+    delete from tb_regis where tb_regis.regis_id=#{0}
+  </delete>
+  <select id="getlistById" parameterType="int" resultType="map">
+    select * from tb_regis where tb_regis.regis_id=#{0}
+  </select>
+
+  <update id="updateById" >
+    update tb_regis
+    set regis_name = #{0},regis_status=#{1}
+    where regis_id = #{2}
+  </update>
+</mapper>

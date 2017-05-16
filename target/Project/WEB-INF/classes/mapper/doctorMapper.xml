@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.dao.doctorMapper" >
+  <resultMap id="BaseResultMap" type="com.project.model.doctor" >
+    <id column="doctor_id" property="doctorId" jdbcType="INTEGER" />
+    <result column="doctor_name" property="doctorName" jdbcType="VARCHAR" />
+    <result column="doctor_level" property="doctorLevel" jdbcType="INTEGER" />
+    <result column="doctor_sex" property="doctorSex" jdbcType="INTEGER" />
+    <result column="doctor_price" property="doctorPrice" jdbcType="DECIMAL" />
+    <result column="dacotor_data" property="dacotorData" jdbcType="DATE" />
+    <result column="doctor_photo" property="doctorPhoto" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    doctor_id, doctor_name, doctor_level, doctor_sex, doctor_price, dacotor_data
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_doctor
+    where doctor_id = #{doctorId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from tb_doctor
+    where doctor_id = #{doctorId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.project.model.doctor" >
+    insert into tb_doctor (doctor_name, doctor_level,
+      doctor_sex, doctor_price, dacotor_data,
+      doctor_photo)
+    values ( #{doctorName,jdbcType=VARCHAR}, #{doctorLevel,jdbcType=INTEGER},
+      #{doctorSex,jdbcType=INTEGER}, #{doctorPrice,jdbcType=DECIMAL}, #{dacotorData,jdbcType=DATE},
+      #{doctorPhoto,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.project.model.doctor" >
+    insert into tb_doctor
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="doctorId != null" >
+        doctor_id,
+      </if>
+      <if test="doctorName != null" >
+        doctor_name,
+      </if>
+      <if test="doctorLevel != null" >
+        doctor_level,
+      </if>
+      <if test="doctorSex != null" >
+        doctor_sex,
+      </if>
+      <if test="doctorPrice != null" >
+        doctor_price,
+      </if>
+      <if test="dacotorData != null" >
+        dacotor_data,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="doctorId != null" >
+        #{doctorId,jdbcType=INTEGER},
+      </if>
+      <if test="doctorName != null" >
+        #{doctorName,jdbcType=VARCHAR},
+      </if>
+      <if test="doctorLevel != null" >
+        #{doctorLevel,jdbcType=INTEGER},
+      </if>
+      <if test="doctorSex != null" >
+        #{doctorSex,jdbcType=INTEGER},
+      </if>
+      <if test="doctorPrice != null" >
+        #{doctorPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="dacotorData != null" >
+        #{dacotorData,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.project.model.doctor" >
+    update tb_doctor
+    <set >
+      <if test="doctorName != null" >
+        doctor_name = #{doctorName,jdbcType=VARCHAR},
+      </if>
+      <if test="doctorLevel != null" >
+        doctor_level = #{doctorLevel,jdbcType=INTEGER},
+      </if>
+      <if test="doctorSex != null" >
+        doctor_sex = #{doctorSex,jdbcType=INTEGER},
+      </if>
+      <if test="doctorPrice != null" >
+        doctor_price = #{doctorPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="dacotorData != null" >
+        dacotor_data = #{dacotorData,jdbcType=DATE},
+      </if>
+    </set>
+    where doctor_id = #{doctorId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.project.model.doctor" >
+    update tb_doctor
+    set doctor_name = #{doctorName,jdbcType=VARCHAR},
+      doctor_level = #{doctorLevel,jdbcType=INTEGER},
+      doctor_sex = #{doctorSex,jdbcType=INTEGER},
+      doctor_price = #{doctorPrice,jdbcType=DECIMAL},
+      dacotor_data = #{dacotorData,jdbcType=DATE},
+      doctor_photo = #{doctorPhoto,jdbcType=VARCHAR}
+    where doctor_id = #{doctorId,jdbcType=INTEGER}
+
+  </update>
+  <select id="getDocList" resultType="map">
+    select doctor_id,doctor_photo,doctor_name,doctor_level,doctor_price from tb_doctor where tb_doctor.doctor_id
+ in (select doctor_id from tb_regis_doctor where tb_regis_doctor.regis_id=#{0}) and tb_doctor.dacotor_data=#{1}
+  </select>
+  <select id="getDoctorList" resultType="map">
+    select * from tb_doctor limit #{0},#{1}
+  </select>
+  <select id="getCount" resultType="int">
+    select count(*) from tb_doctor
+  </select>
+  <delete id="deleteDoc" parameterType="int">
+    delete from tb_doctor where tb_doctor.doctor_id=#{0}
+  </delete>
+  <select id="getdocById" parameterType="int" resultType="map">
+    select * from tb_doctor where tb_doctor.doctor_id=#{0}
+  </select>
+</mapper>

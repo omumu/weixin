@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.dao.visMapper">
+  <resultMap id="BaseResultMap" type="com.project.model.vis">
+    <id column="vis_id" jdbcType="INTEGER" property="visId" />
+    <result column="vis_name" jdbcType="VARCHAR" property="visName" />
+    <result column="vis_data" jdbcType="TIMESTAMP" property="visData" />
+    <result column="vis_phone" jdbcType="VARCHAR" property="visPhone" />
+    <result column="regis_name" jdbcType="VARCHAR" property="regisName" />
+    <result column="vis_status" jdbcType="INTEGER" property="visStatus" />
+  </resultMap>
+
+  <insert id="insertVis">
+    insert into tb_vis (vis_name,vis_doctor, vis_data,vis_phone, regis_name,vis_school)values(#{0},#{1},#{2},#{3},#{4},#{5})
+  </insert>
+  <select id="getVis" resultType="map">
+    select * from tb_vis limit #{0},#{1}
+  </select>
+  <delete id="deletevis" parameterType="int">
+    delete from tb_vis where tb_vis.vis_id=#{0}
+  </delete>
+  <select id="getvisCount" resultType="int">
+    select count(*) from tb_vis
+  </select>
+  <select id="getvisById" parameterType="int" resultType="map">
+    select * from tb_vis where tb_vis.vis_id=#{0}
+  </select>
+  <update id="updateVis">
+    update tb_vis set vis_name=#{0} , vis_phone=#{1},regis_status=#{2} where vis_id=#{3}
+  </update>
+
+</mapper>

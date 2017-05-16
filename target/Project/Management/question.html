@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>后台管理系统</title>
+<meta name="author" content="DeathGhost" />
+<link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/style1.css" />
+<link rel="stylesheet" type="text/css" href="css/paging.css">
+
+<!--[if lt IE 9]>
+    <script src="../js/html5.js"></script>
+    <![endif]-->
+<!--    fenye-->
+
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/query.js"></script>
+    <script type="text/javascript" src="js/paging.js"></script>
+ <!--   fenye-->
+<script src="js/jquery.js"></script>
+<script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+ <script src="js/vedio.js"></script>
+<script>
+	(function($){
+		$(window).load(function(){
+			
+			$("a[rel='load-content']").click(function(e){
+				e.preventDefault();
+				var url=$(this).attr("href");
+				$.get(url,function(data){
+					$(".content .mCSB_container").append(data); //load new content inside .mCSB_container
+					//scroll-to appended content 
+					$(".content").mCustomScrollbar("scrollTo","h2:last");
+				});
+			});
+			
+			$(".content").delegate("a[href='top']","click",function(e){
+				e.preventDefault();
+				$(".content").mCustomScrollbar("scrollTo",$(this).attr("href"));
+			});
+			
+		});
+	})(jQuery);
+</script>
+</head>
+<body>
+<!--header-->
+<header>
+ <h1 style="color:white;font-family:隶书;font-size:40px;margin-top:15px">校园医疗后台管理系统</h1>
+ <ul class="rt_nav">
+  <li><a href="../firstpage.jsp" target="_blank" class="website_icon">站点首页</a></li>
+  <li><a href="login.html" class="quit_icon">安全退出</a></li>
+ </ul>
+</header>
+
+<!--aside nav-->
+<aside class="lt_aside_nav content mCustomScrollbar">
+<ul>
+  <li>
+   <dl>
+    <dt>管理列表</dt>
+    <!--当前链接则添加class:active-->
+	<dd><a href="index.html"  id="1" onclick="test(this)">挂号管理</a></dd>
+       <dd><a href="doctor.html"  id="2" onclick="test(this)" >医生管理</a></dd>
+       <dd><a href="#" class="active" id="4" onclick="test(this)">咨询管理</a></dd>
+       <dd><a href="regis.html" id="5" onclick="test(this)">科室管理</a></dd>
+       <dd><a href="user.html"id="6" onclick="test(this)">用户管理</a></dd>
+	  <dd><a href="school.html"  id="7" onclick="test(this)">学校管理</a></dd>
+       <dd><a href="images.html"  id="8" onclick="test(this)">图片上传</a></dd>
+   </dl>
+  </li>
+ </ul>
+</aside>
+
+<section class="rt_wrap content mCustomScrollbar">
+ <div class="rt_content">
+   <script>
+       function test(obj){
+           var id=obj.id;
+           $("#"+id+"").addClass("active").parent().siblings().find("a").removeClass("active");
+
+
+       }
+   </script>
+   <!--  ------------------------------------点击左边切换右边事件----------------------------------------------->
+
+  <script>
+      /*-----------------------------------------------------结束---------------------------------------------*/
+     $(document).ready(function(){
+		 //tab
+		 $(".admin_tab li a").click(function(){
+		  var liindex = $(".admin_tab li a").index(this);
+		  $(this).addClass("active").parent().siblings().find("a").removeClass("active");
+		  $(".admin_tab_cont").eq(liindex).fadeIn(150).siblings(".admin_tab_cont").hide();
+		 });
+		 });
+     </script>
+   <!--  -----------------------------------------右边模块--------------------------------------------------------->
+    <!---------------------------------------------------------- 时间转换----------->
+     <script>
+         function getLocalTime(unixTime) {//由于东八区 所以加8小时
+             var time = new Date(unixTime + 8 * 60 * 60 * 1000);
+             var ymdhis = "";
+             ymdhis += time.getUTCFullYear() + "-";
+             ymdhis += (time.getUTCMonth()+1) + "-";
+             ymdhis += time.getUTCDate();
+            /* ymdhis += " " + time.getUTCHours() + ":";
+             ymdhis += time.getUTCMinutes() + ":";
+             ymdhis += time.getUTCSeconds();*/
+             return ymdhis;
+         }
+     </script>
+  <!--  --------------------------------------- 1--------------------------------------------->
+    <script>
+        function deletequestion(v){
+     var visid=$(v).parent().parent().find('td:first').text();
+
+     alert("是否确认删除！");
+     $.ajax({
+     type: "POST",
+     cache: false,
+     url: "../question/deletequestion",
+     data: {id:visid},
+     dataType: "json",
+     success: function (data) {
+     if (data.code == 1) {
+     alert("删除成功！");
+     location.reload();
+     }else{alert("删除失败！错误信息: "+data.message);}
+     }
+
+     })
+     }
+    </script>
+     <script>
+         function getstatus(code){
+
+             switch (code) {
+                 case 1:
+                     return "正常";
+                 case 0:
+                     return "关闭";
+             }
+         }
+
+         $(document).ready(function() {
+             var count;
+             fenye();
+             $.ajax({
+                 type: "POST",
+                 cache: false,
+                 url: "../question/getQuestionCount",
+                 dataType: "json",
+                 success: function (data) {
+                     if (data.code == 1) {
+                         count=data.data;
+                     }
+
+                     var page =new Paging();
+                     page.init({target:$('#pageTool'), pagesize:10,count:count,callback:function(pages,size,count){
+                         $.ajax({
+                             type: "POST",
+                             cache: false,
+                             url: "../question/getQuestionListM",
+                             data: {page:pages},
+                             dataType: "json",
+                             success: function (data) {
+                                 if (data.code == 1) {
+
+                                     var lilist ="<tr><th>ID</th><th style='width:420px;height: 50px'>咨询问题</th><th style='width:650px'>咨询回答</th><th style='width:100px'>状态</th><th style='width:160px;'>操作</th></tr>";
+                                         for (var i = 0; i < data.data.length; i++) {
+                                             lilist +="<tr><td >"+data.data[i].id+"</td><td>"+data.data[i].question+"</td><td style='overflow: hidden'>"+data.data[i].answer+"</td><td>"+getstatus(data.data[i].statusint)+"</td>"+
+                                                     "<td><button class='link_btn'onclick='change(this)' id='showPopTxt4'>修改</button>&nbsp;<input type='button' value='删除' class='link_btn'  onclick='deletequestion(this)' id='deletelist4'/></td></tr>";
+                                         }
+                                         $("#questiontable").html(lilist);
+
+                                 }else{alert("请求超时，请重试...");}
+                             }
+
+                         })
+                     }});
+
+                 }
+
+
+
+             })
+
+         })
+       function fenye(){
+             $.ajax({
+                 type: "POST",
+                 cache: false,
+                 url: "../question/getQuestionListM",
+                data: {page:1},
+                 dataType: "json",
+                 success: function (data) {
+                     if (data.code == 1) {
+
+                         var lilist ="<tr><th>ID</th><th style='width:320px;height: 50px'>咨询问题</th><th style='width:700px'>咨询回答</th><th style='width:100px'>状态</th><th style='width:160px;'>操作</th></tr>";
+                         for (var i = 0; i < data.data.length; i++) {
+                             lilist +="<tr><td >"+data.data[i].id+"</td><td>"+data.data[i].question+"</td><td style='overflow: hidden'>"+data.data[i].answer+"</td><td>"+getstatus(data.data[i].statusint)+"</td>"+
+                                     "<td><button class='link_btn'onclick='change(this)' id='showPopTxt4'>修改</button>&nbsp;<input type='button' value='删除' onclick='deletequestion(this)' class='link_btn'  id='deletelist4'/></td></tr>";
+                         }
+                         $("#questiontable").html(lilist);
+
+                 }else{
+                     alert("请求超时，请重试...");
+         }
+
+
+                 }
+
+             })
+         }
+     </script>
+
+  <!-- -----------------------------------------------------------------------------  7-->
+     <div class="pop_bg1" style="display: none">
+         <div class="pop_cont">
+             <!--title-->
+             <h3>新增咨询信息</h3>
+             <!--content-->
+             <div class="pop_cont_input">
+                 <ul>
+
+                     <li>
+                         <span>咨询标题:</span>
+                         <input type="text" id="titleadd"  class="textbox" style="width:270px"/>
+                     </li>
+                     <li>
+                         <span>咨询回答:</span>
+                         <textarea id="answeradd"  class="textbox" style="height:150px;width:270px"></textarea>
+                     </li>
+                     <li>
+                         <span>咨询状态:</span>
+                         <select id="statusadd">
+                             <option value="1">正常</option>
+                             <option value="0">关闭</option>
+                         </select>
+                 </ul>
+             </div>
+             <!--以pop_cont_text分界-->
+             <!--bottom:operate->button-->
+             <div class="btm_btn">
+                 <input type="button" value="确认添加" class="input_btn trueBtn" id="trueBtnadd" onclick="addschool()"/>
+                 <input type="button" value="关闭" class="input_btn falseBtn" id="falseBtnadd" onclick="guanbi()"/>
+             </div><!--class="input_btn falseBtn"  class="input_btn trueBtn"-->
+         </div>
+     </div>
+
+     <script>
+         function addschool(){
+             var titleadd=$("#titleadd").val();
+             var answeradd=$("#answeradd").val();
+             var statusadd=$("#statusadd").val();
+             if(titleadd==""||answeradd==""||statusadd==""){
+                 alert("新增信息不能为空！");
+             }else{
+             $.ajax({
+                 type: "POST",
+                 cache: false,
+                 url: "../question/addquestion",
+                 data: {title:titleadd,answer:answeradd,status:statusadd},
+                 dataType: "json",
+                 success: function (data) {
+                     if (data.code == 1) {
+                         $(".pop_bg1").css('display','none');
+                         alert("添加咨询成功！");
+                         location.reload();
+
+
+
+                     }else{ alert("添加咨询成功！");}
+                 }
+             })}
+
+         }
+
+        function guanbi(){
+
+            $(".pop_bg1").css('display','none');
+            location.reload();
+        }
+        function add(){
+            $(".pop_bg1").css('display','block');
+
+
+
+        }
+
+        /* $(".addbanner").delegate("#list","click",function(){
+             $(".add").fadeOut();
+         });*/
+     </script>
+
+     <!---->
+
+     <!--------------------------------------------------------------- 5------------------------------------------->
+     <section id="section4" style="display: block">
+         <ul class="admin_tab">
+             <li><a class="active">咨询列表</a></li>
+             <li><a onclick="add()">咨询添加</a></li>
+
+         </ul>
+         <!--tabCont-->
+         <div class="admin_tab_cont" style="display:block;">
+
+             <table class="table" id="questiontable">
+             </table>
+             <aside class="paging" id="pageTool"></aside>
+
+
+
+         </div>
+     </section>
+     <!----------------------------------------------------------5----------------------------->
+     <section id="section5" style="display: none">
+         <ul class="admin_tab">
+             <li><a class="active">科室列表</a></li>
+             <li><a >科室添加</a></li>
+             <!-- <li><a>新增视频</a></li>
+              <li><a>待新增</a></li>-->
+         </ul>
+         <!--tabCont-->
+         <div class="admin_tab_cont" style="display:block;">
+
+             <table class="table" id="registable"><tr>
+                 <th>ID</th>
+                 <th style="width:320px;height: 50px">科室名称</th>
+                 <th style="width:400px">科室状态</th>
+                 <th style="width:160px;">操作</th>
+             </tr>
+                 <tr>
+                     <td >1</td>
+                     <td>内容二</td>
+                     <td>内容三</td>
+
+                     <td>
+                         <button class="link_btn" id="showPopTxt5">修改</button>
+                         <input type="button" value="删除" class="link_btn"  id="deletelist5"/>
+                     </td>
+                 </tr>
+
+             </table>
+
+
+         </div>
+     </section>
+    <!-------------------------------------------------------------- 6----------------------------->
+     <section id="section6" style="display: none">
+         <ul class="admin_tab">
+             <li><a class="active">用户列表</a></li>
+
+             <!-- <li><a>新增视频</a></li>
+              <li><a>待新增</a></li>-->
+         </ul>
+         <!--tabCont-->
+         <div class="admin_tab_cont" style="display:block;">
+
+             <table class="table" id="usertable"><tr>
+                 <th>ID</th>
+                 <th style="width:320px;height: 50px">用户名</th>
+                 <th style="width:200px">用户性别</th>
+                 <th style="width:400px">用户头像</th>
+                 <th style="width:390px;">用户OPENID</th>
+                 <th style="width:300px">注册时间</th>
+                 <th style="width:200px">用户余额</th>
+                 <th style="width:200px">操作</th>
+             </tr>
+                 <tr>
+                     <td >1</td>
+                     <td>内容二</td>
+                     <td>内容三</td>
+                     <td>内容四</td>
+                     <td>内容五</td>
+                     <td>内容六</td>
+                     <td>内容七</td>
+
+                     <td>
+                         <button class="link_btn" id="showPopTxt6">修改</button>
+                         <input type="button" value="删除" class="link_btn"  id="deletelist6"/>
+                     </td>
+                 </tr>
+
+             </table>
+
+
+
+         </div>
+     </section>
+	 <!--删除视频-->
+	 <script>
+
+ $("#questiontable").delegate("#showPopTxt4","click",function(){
+     $(".pop_bg").fadeIn();
+ });
+
+
+
+     </script>
+       <!--弹出框效果-->
+<script>
+   function change(v) {
+       var visid=$(v).parent().parent().find('td:first').text();
+       $.ajax({
+           type: "POST",
+           cache: false,
+           url: "../question/getquestionById",
+           data: {id:visid},
+           dataType: "json",
+           success: function (data) {
+               if (data.code == 1) {
+                   $('#ID').val(visid);
+                   $('#title').val(data.data[0].question);
+                   $('#answer').val(data.data[0].answer);
+                   $('#status').val(data.data[0].statusint);
+
+
+
+               }}
+           })
+       }
+
+</script>
+     <section class="pop_bg">
+      <div class="pop_cont">
+       <!--title-->
+       <h3>修改咨询信息</h3>
+       <!--content-->
+       <div class="pop_cont_input">
+        <ul>
+            <li>
+                <span>咨询编号:</span>
+                <input type="text" id="ID"  class="textbox" disabled="true" style="width:270px"/>
+            </li>
+         <li>
+          <span>咨询标题:</span>
+          <input type="text" id="title"  class="textbox" style="width:270px"/>
+         </li>
+        <li>
+          <span>咨询回答:</span>
+            <textarea id="answer"  class="textbox" style="height:150px;width:270px"></textarea>
+        </li>
+            <li>
+                <span>咨询状态:</span>
+               <select id="status"  style="width: 65px;height: 33px">
+                   <option value="1">正常</option>
+                   <option value="0">关闭</option>
+               </select>
+        </ul>
+       </div>
+       <!--以pop_cont_text分界-->
+       <!--bottom:operate->button-->
+       <div class="btm_btn">
+           <input type="button" value="确认修改" class="input_btn trueBtn" id="trueBtn" onclick="sure()"/>
+        <input type="button" value="关闭" class="input_btn falseBtn" id="falseBtn" onclick="closes()"/>
+       </div>
+      </div>
+     </section>
+
+     <!--结束：弹出框效果-->
+     <script>
+         function sure(){
+             var id=$('#ID').val();
+            var title= $('#title').val();
+             var answer=$('#answer').val();
+            var status= $('#status').val();
+
+             $.ajax({
+                 type: "POST",
+                 cache: false,
+                 url: "../question/updatequestion",
+                 data: {title:title,answer:answer,status:status,id:id},
+                 dataType: "json",
+                 success: function (data) {
+
+                     if (data.code == 1) {
+                         $(".pop_bg").fadeOut();
+                       alert("修改成功！");
+                        location.reload();
+                     }else{
+                         $(".pop_bg").fadeOut();
+                         alert("修改失败！");
+                     }
+                 }
+
+             })
+
+         }
+         function closes(){
+             $(".pop_bg").fadeOut();
+         }
+     </script>
+     <script>
+         $(document).ready(function() {
+         $.ajax({
+             type: "POST",
+             cache: false,
+             url: "../user/islogin",
+
+             dataType: "json",
+             success: function (data) {
+
+                 if (data.code == 1) {
+                     window.location.href="login.html";
+                 }
+             }
+
+         })
+         })
+     </script>
+
+</div>
+</section>
+</body>
+</html>

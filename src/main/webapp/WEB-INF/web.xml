@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+ <!--<listener>
+        <listener-class>
+            org.springframework.web.util.Log4jConfigListener
+        </listener-class>
+    </listener>-->
+    <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+
+    <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath*:/spring-mybatis.xml</param-value>
+  </context-param>
+  <!--配置编码格式 -->
+  <filter>
+    <filter-name>encodingfilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>utf-8</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>encodingfilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+
+
+    <context-param>
+        <param-name>log4jConfigLocation</param-name>
+        <param-value>classpath:log4j.properties</param-value>
+</context-param>
+
+    <!--配置springmvc -->
+  <servlet>
+    <servlet-name>springmvc</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath*:/spring-mvc.xml</param-value>
+</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>springmvc</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+  <!--  为了在Spring中使用logback框架，要添加servlet context listener到web.xml文件中-->
+ <!--<listener>
+        <listener-class>ch.qos.logback.ext.spring.web.LogbackConfigListener</listener-class>
+    </listener>-->
+<!--<context-param>
+    <param-name>logbackConfigLocation</param-name>
+    <param-value>classpath*:logback.xml</param-value>
+  </context-param>-->
+
+
+
+  <!-- <context-param> <param-name>log4jConfigLocation</param-name> <param-value>classpath*:/log4j.properties</param-value>
+      </context-param> <listener> <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+      </listener> -->
+
+
+
+  <!--<listener> <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+      </listener> -->
+  <!--引入spring配置文件 -->
+  <welcome-file-list>
+    <welcome-file>firstpage.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>

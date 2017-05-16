@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.project.dao.schoolMapper" >
+  <resultMap id="BaseResultMap" type="com.project.model.school" >
+    <id column="school_id" property="schoolId" jdbcType="INTEGER" />
+    <result column="schoole_name" property="schooleName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    school_id, schoole_name
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_school
+    where school_id = #{schoolId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from tb_school
+    where school_id = #{schoolId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.project.model.school" >
+    insert into tb_school (school_id, schoole_name)
+    values (#{schoolId,jdbcType=INTEGER}, #{schooleName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.project.model.school" >
+    insert into tb_school
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="schoolId != null" >
+        school_id,
+      </if>
+      <if test="schooleName != null" >
+        schoole_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="schoolId != null" >
+        #{schoolId,jdbcType=INTEGER},
+      </if>
+      <if test="schooleName != null" >
+        #{schooleName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.project.model.school" >
+    update tb_school
+    <set >
+      <if test="schooleName != null" >
+        schoole_name = #{schooleName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where school_id = #{schoolId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.project.model.school" >
+    update tb_school
+    set schoole_name = #{schooleName,jdbcType=VARCHAR}
+    where school_id = #{schoolId,jdbcType=INTEGER}
+  </update>
+  <select id="getSchool" resultType="map">
+    select * from tb_school
+  </select>
+  <insert id="insertschool" >
+    INSERT into tb_user_school (tb_user_school.schoolid,tb_user_school.userid)VALUES(#{0},#{1})
+  </insert>
+  <select id="getSchoolName" resultType="String" parameterType="int">
+    select schoole_name from tb_school where tb_school.school_id=#{0}
+  </select>
+</mapper>
